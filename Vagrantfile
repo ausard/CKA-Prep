@@ -6,8 +6,9 @@ ENV['VAGRANT_NO_PARALLEL'] = 'yes'
 Vagrant.configure(2) do |config|
 
     # config.vm.provision "shell", path: "bootstrap.sh"
-    config.vm.provision "shell", path: "cri-o.sh"
-    
+    # config.vm.provision "shell", path: "cri-o.sh"
+    # config.vm.provision "shell", path: "containerd.sh"
+
     # Kubernetes Master Server
     config.vm.define "kmaster" do |kmaster|
       kmaster.vm.box = "ubuntu/focal64"
@@ -18,10 +19,10 @@ Vagrant.configure(2) do |config|
         v.memory = 2048
         v.cpus = 2
       end
-      # kmaster.vm.provision "shell", path: "bootstrap_kmaster.sh"
+      kmaster.vm.provision "shell", path: "master.sh"
     end
   
-    NodeCount = 2
+    NodeCount = 1
   
     # Kubernetes Worker Nodes
     (1..NodeCount).each do |i|
@@ -34,7 +35,7 @@ Vagrant.configure(2) do |config|
           v.memory = 1024
           v.cpus = 1
         end
-        # workernode.vm.provision "shell", path: "bootstrap_kworker.sh"
+        workernode.vm.provision "shell", path: "worker.sh"
       end
     end
   
