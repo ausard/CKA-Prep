@@ -8,10 +8,11 @@ cat >>/etc/hosts<<EOF
 192.168.60.102 kworker2.example.com kworker2
 EOF
 
-KUBE_VERSION=1.26.1
+KUBE_VERSION=1.27.4
 
 
 ### setup terminal
+echo "[TASK 2] setup terminal"
 apt-get update
 apt-get install -y bash-completion binutils
 echo 'colorscheme ron' >> ~/.vimrc
@@ -31,6 +32,7 @@ sed -i '/\sswap\s/ s/^\(.*\)$/#\1/g' /etc/fstab
 
 
 ### remove packages
+echo "[TASK 3] remove packages"
 kubeadm reset -f || true
 crictl rm --force $(crictl ps -a -q) || true
 apt-mark unhold kubelet kubeadm kubectl kubernetes-cni || true
@@ -41,6 +43,7 @@ systemctl daemon-reload
 
 
 ### install podman
+echo "[TASK 4] install podman"
 . /etc/os-release
 echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/ /" | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:testing.list
 curl -L "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/Release.key" | sudo apt-key add -
@@ -54,6 +57,7 @@ EOF
 
 
 ### install packages
+echo "[TASK 5] install packages"
 curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 cat <<EOF > /etc/apt/sources.list.d/kubernetes.list
 deb http://apt.kubernetes.io/ kubernetes-xenial main
@@ -63,12 +67,14 @@ apt-get install -y docker.io containerd kubelet=${KUBE_VERSION}-00 kubeadm=${KUB
 apt-mark hold kubelet kubeadm kubectl kubernetes-cni
 
 
-### install containerd 1.6 over apt-installed-version
-wget https://github.com/containerd/containerd/releases/download/v1.6.12/containerd-1.6.12-linux-amd64.tar.gz
-tar xvf containerd-1.6.12-linux-amd64.tar.gz
+### install containerd over apt-installed-version
+echo "[TASK 6] install containerd over apt-installed-version"
+CONTAINERD_VERSION=1.7.3
+wget https://github.com/containerd/containerd/releases/download/v${CONTAINERD_VERSION}/containerd-${CONTAINERD_VERSION}-linux-amd64.tar.gz
+tar xvf containerd-${CONTAINERD_VERSION}-linux-amd64.tar.gz
 systemctl stop containerd
 mv bin/* /usr/bin
-rm -rf bin containerd-1.6.12-linux-amd64.tar.gz
+rm -rf bin containerd-${CONTAINERD_VERSION}-linux-amd64.tar.gz
 systemctl unmask containerd
 systemctl start containerd
 
@@ -138,7 +144,7 @@ EOF
 ### kubelet should use containerd
 {
 cat <<EOF | sudo tee /etc/default/kubelet
-KUBELET_EXTRA_ARGS="--container-runtime remote --container-runtime-endpoint unix:///run/containerd/containerd.sock"
+KUBELET_EXTRA_ARGS="--container-runtime-endpoint unix:///run/containerd/containerd.sock"
 EOF
 }
 
@@ -153,6 +159,7 @@ systemctl enable kubelet && systemctl start kubelet
 
 ### init k8s
 rm /root/.kube/config || true
+kubeadm config images pull --kubernetes-version=${KUBE_VERSION}
 kubeadm init --apiserver-advertise-address=192.168.60.100 --kubernetes-version=${KUBE_VERSION} --ignore-preflight-errors=NumCPU --skip-token-print --pod-network-cidr 192.168.0.0/16
 
 mkdir -p ~/.kube
@@ -163,7 +170,7 @@ kubectl apply -f https://raw.githubusercontent.com/killer-sh/cks-course-environm
 
 
 # etcdctl
-ETCDCTL_VERSION=v3.5.1
+ETCDCTL_VERSION=v3.5.9
 ETCDCTL_ARCH=$(dpkg --print-architecture)
 ETCDCTL_VERSION_FULL=etcd-${ETCDCTL_VERSION}-linux-${ETCDCTL_ARCH}
 wget https://github.com/etcd-io/etcd/releases/download/${ETCDCTL_VERSION}/${ETCDCTL_VERSION_FULL}.tar.gz

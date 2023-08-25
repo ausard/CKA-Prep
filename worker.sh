@@ -8,7 +8,7 @@ cat >>/etc/hosts<<EOF
 192.168.60.102 kworker2.example.com kworker2
 EOF
 
-KUBE_VERSION=1.26.1
+KUBE_VERSION=1.27.4
 
 
 ### setup terminal
@@ -63,12 +63,13 @@ apt-get install -y docker.io containerd kubelet=${KUBE_VERSION}-00 kubeadm=${KUB
 apt-mark hold kubelet kubeadm kubectl kubernetes-cni
 
 
-### install containerd 1.6 over apt-installed-version
-wget https://github.com/containerd/containerd/releases/download/v1.6.12/containerd-1.6.12-linux-amd64.tar.gz
-tar xvf containerd-1.6.12-linux-amd64.tar.gz
+### install containerd over apt-installed-version
+CONTAINERD_VERSION=1.7.3
+wget https://github.com/containerd/containerd/releases/download/v${CONTAINERD_VERSION}/containerd-${CONTAINERD_VERSION}-linux-amd64.tar.gz
+tar xvf containerd-${CONTAINERD_VERSION}-linux-amd64.tar.gz
 systemctl stop containerd
 mv bin/* /usr/bin
-rm -rf bin containerd-1.6.12-linux-amd64.tar.gz
+rm -rf bin containerd-${CONTAINERD_VERSION}-linux-amd64.tar.gz
 systemctl unmask containerd
 systemctl start containerd
 
@@ -138,7 +139,7 @@ EOF
 ### kubelet should use containerd
 {
 cat <<EOF | sudo tee /etc/default/kubelet
-KUBELET_EXTRA_ARGS="--container-runtime remote --container-runtime-endpoint unix:///run/containerd/containerd.sock"
+KUBELET_EXTRA_ARGS="--container-runtime-endpoint unix:///run/containerd/containerd.sock"
 EOF
 }
 
