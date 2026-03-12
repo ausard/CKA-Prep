@@ -40,8 +40,8 @@ systemctl start docker
 
 Install containerd
 echo "[TASK 3] Install containerd"
-wget https://github.com/containerd/containerd/releases/download/v1.6.16/containerd-1.6.16-linux-amd64.tar.gz
-tar Cxzvf /usr/local containerd-1.6.16-linux-amd64.tar.gz
+wget https://github.com/containerd/containerd/releases/download/v2.2.2/containerd-2.2.2-linux-amd64.tar.gz
+tar Cxzvf /usr/local containerd-2.2.2-linux-amd64.tar.gz
 curl -L https://raw.githubusercontent.com/containerd/containerd/main/containerd.service -o /etc/systemd/system/containerd.service
 sudo rm /etc/containerd/config.toml
 sudo systemctl daemon-reload

@@ -8,7 +8,7 @@ cat >>/etc/hosts<<EOF
 192.168.60.102 kworker2.example.com kworker2
 EOF
 
-KUBE_VERSION=1.27.4
+KUBE_VERSION=1.35.2
 
 
 ### setup terminal
@@ -69,7 +69,7 @@ apt-mark hold kubelet kubeadm kubectl kubernetes-cni
 
 ### install containerd over apt-installed-version
 echo "[TASK 6] install containerd over apt-installed-version"
-CONTAINERD_VERSION=1.7.3
+CONTAINERD_VERSION=2.2.2
 wget https://github.com/containerd/containerd/releases/download/v${CONTAINERD_VERSION}/containerd-${CONTAINERD_VERSION}-linux-amd64.tar.gz
 tar xvf containerd-${CONTAINERD_VERSION}-linux-amd64.tar.gz
 systemctl stop containerd
@@ -170,7 +170,7 @@ kubectl apply -f https://raw.githubusercontent.com/killer-sh/cks-course-environm
 
 
 # etcdctl
-ETCDCTL_VERSION=v3.5.9
+ETCDCTL_VERSION=v3.6.8
 ETCDCTL_ARCH=$(dpkg --print-architecture)
 ETCDCTL_VERSION_FULL=etcd-${ETCDCTL_VERSION}-linux-${ETCDCTL_ARCH}
 wget https://github.com/etcd-io/etcd/releases/download/${ETCDCTL_VERSION}/${ETCDCTL_VERSION_FULL}.tar.gz

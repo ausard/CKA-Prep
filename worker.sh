@@ -8,7 +8,7 @@ cat >>/etc/hosts<<EOF
 192.168.60.102 kworker2.example.com kworker2
 EOF
 
-KUBE_VERSION=1.27.4
+KUBE_VERSION=1.35.2
 
 
 ### setup terminal
@@ -64,7 +64,7 @@ apt-mark hold kubelet kubeadm kubectl kubernetes-cni
 
 
 ### install containerd over apt-installed-version
-CONTAINERD_VERSION=1.7.3
+CONTAINERD_VERSION=2.2.2
 wget https://github.com/containerd/containerd/releases/download/v${CONTAINERD_VERSION}/containerd-${CONTAINERD_VERSION}-linux-amd64.tar.gz
 tar xvf containerd-${CONTAINERD_VERSION}-linux-amd64.tar.gz
 systemctl stop containerd

@@ -28,8 +28,8 @@ EOF
 
 sudo sysctl --system
 
-OS=xUbuntu_20.04
-VERSION=1.25
+OS=xUbuntu_22.04
+VERSION=1.35
 
 # Add Kubic Repo
 echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/$OS/ /" | \

@@ -25,8 +25,8 @@ EOF
 # systemctl start docker
 
 echo "[TASK 2] Install CRI-O container engine"
-OS=xUbuntu_18.04
-CRIO_VERSION=1.24
+OS=xUbuntu_22.04
+CRIO_VERSION=1.35
 echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/$OS/ /"|sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
 echo "deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/$CRIO_VERSION/$OS/ /"|sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable:cri-o:$CRIO_VERSION.list
 
